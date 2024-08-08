@@ -1,29 +1,27 @@
 "use client";
 
-import { useState, useEffect, createElement } from "react";
+import { createElement } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { FileImageOutlined, UploadOutlined } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 
 const { Content, Footer } = Layout;
 
-export default function DashboardLayout({ children }) {
+export default function ImagesLayout({ children }) {
   const router = useRouter();
-
   const pathname = usePathname();
-
-  const lastPathname = pathname.split("/").pop();
 
   const items = [
     {
-      key: "images",
+      key: "/images",
       icon: FileImageOutlined,
-      label: "Images"
+      label: "Images",
     },
     {
-      key: "images/upload",
+      key: "/images/upload",
       icon: UploadOutlined,
-      label: "Upload"
+      label: "Upload",
+      disabled: true,
     },
   ].map((item) => ({
     ...item,
@@ -38,9 +36,10 @@ export default function DashboardLayout({ children }) {
     <Layout style={{ minHeight: "100vh" }}>
       <Menu
         mode="horizontal"
-        activeKey={lastPathname}
+        activeKey={pathname}
         items={items}
         onClick={handleOnClickMenu}
+        style={{ width: "auto" }}
       />
       <Layout>
         <Content
@@ -49,7 +48,7 @@ export default function DashboardLayout({ children }) {
             overflow: "initial",
           }}
         >
-            {children}
+          {children}
         </Content>
         <Footer
           style={{

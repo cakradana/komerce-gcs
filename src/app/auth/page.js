@@ -33,8 +33,18 @@ export default function Login() {
     <div className="bg-[url('/images/login-bg.svg')] bg-cover bg-bottom min-h-screen">
       <div className="flex flex-col items-center justify-center min-h-screen py-2">
         <div className="flex justify-center items-center mb-4">
-          <Image src="/images/komerce.svg" alt="Komerce Logo" width={75} height={75} />
-          <Image src="/images/gcs.svg" alt="GCS Logo" width={100} height={100} />
+          <Image
+            src="/images/komerce.svg"
+            alt="Komerce Logo"
+            width={75}
+            height={75}
+          />
+          <Image
+            src="/images/gcs.svg"
+            alt="GCS Logo"
+            width={100}
+            height={100}
+          />
         </div>
         <Card className="w-full max-w-sm p-4">
           <h1 className="text-3xl mb-4 text-center">Login</h1>
@@ -45,25 +55,38 @@ export default function Login() {
           >
             <Form.Item
               name="username"
-              rules={[{ required: true, message: "Please input your username!" }]}
+              rules={[
+                { required: true, message: "Please input your username!" },
+              ]}
               className="w-full"
             >
               <Input placeholder="Username" />
             </Form.Item>
             <Form.Item
               name="password"
-              rules={[{ required: true, message: "Please input your password!" }]}
+              rules={[
+                { required: true, message: "Please input your password!" },
+              ]}
               className="w-full"
             >
               <Input.Password placeholder="Password" />
             </Form.Item>
             <Form.Item className="w-full">
-              <Button type="primary" htmlType="submit" loading={loading} className="w-full">
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={loading}
+                className="w-full"
+              >
                 Login as Admin
               </Button>
             </Form.Item>
             <Form.Item className="w-full">
-              <Button type="default" onClick={() => router.push("/")} className="w-full">
+              <Button
+                type="default"
+                onClick={() => router.push("/images")}
+                className="w-full"
+              >
                 Login as Guest
               </Button>
             </Form.Item>

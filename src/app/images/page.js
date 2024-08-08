@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import {
   Input,
   Typography,
@@ -8,91 +7,68 @@ import {
   Image,
   Pagination,
   Button,
-  message,
   Skeleton,
 } from "antd";
+import useImagesPage from "../../hooks/useImagesPage";
 
 const { Text } = Typography;
 const { Search } = Input;
 
-export default function Dashboard() {
-  const [imageData, setImageData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-  const [searchValue, setSearchValue] = useState("");
-  const [loading, setLoading] = useState(true);
+const PAGE_SIZE = 10;
 
-  const fetchImages = async () => {
-    try {
-      const res = await fetch(
-        "https://internal.komtim.id/api/storage/folder/list"
-      );
-      const data = await res.json();
-      const array = Object.values(data).flat();
-      setImageData(array);
-      setFilteredData(array);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching images:", error);
-      setLoading(false);
-    }
-  };
+export default function ImagesPage() {
+  const {
+    imageData,
+    loading,
+    currentPage,
+    searchValue,
+    onSearch,
+    onCopyUrl,
+    setCurrentPage,
+  } = useImagesPage();
 
-  useEffect(() => {
-    fetchImages();
-  }, []);
+  const filteredData =
+    imageData?.filter((item) =>
+      item.url.toLowerCase().includes(searchValue.toLowerCase())
+    ) || [];
 
-  const onSearch = (value) => {
-    setSearchValue(value);
-    const filtered = imageData.filter((item) =>
-      item.url.toLowerCase().includes(value.toLowerCase())
-    );
-    setFilteredData(filtered);
+  const startIndex = (currentPage - 1) * PAGE_SIZE;
+  const endIndex = startIndex + PAGE_SIZE;
+  const currentData = filteredData.slice(startIndex, endIndex);
+
+  const handleSearch = (value) => {
+    onSearch(value);
     setCurrentPage(1);
   };
-
-  const handlePageChange = (page, pageSize) => {
-    setCurrentPage(page);
-    setPageSize(pageSize);
-  };
-
-  const handleCopyUrl = (url) => {
-    navigator.clipboard.writeText(url).then(() => {
-      message.success("URL copied to clipboard!");
-    });
-  };
-
-  const startIndex = (currentPage - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
-  const currentData = filteredData.slice(startIndex, endIndex);
 
   return (
     <div>
       <Search
         placeholder="Search images"
-        onSearch={onSearch}
-        style={{ marginBottom: 16 }}
+        onSearch={handleSearch}
+        style={{ marginBottom: 12 }}
         enterButton="Search"
         allowClear
       />
-      {filteredData.length !== imageData.length && (
+      {filteredData.length !== imageData?.length && (
         <Text>
           Displaying {currentData.length} of {filteredData.length} search
           results for <Text strong>&quot;{searchValue}&quot;</Text>
         </Text>
       )}
 
-      <div style={{
-            marginTop: 16,
-            padding: 24,
-            background: "#fff",
-            borderRadius: "8px",
-          }}>
+      <div
+        style={{
+          marginTop: 12,
+          padding: 48,
+          background: "#fff",
+          borderRadius: "8px",
+        }}
+      >
         {loading ? (
           <List
-            grid={{ gutter: 16, column: 5, xs: 1, sm: 2, md: 3, lg: 4 }}
-            dataSource={[...Array(pageSize).keys()]}
+            grid={{ gutter: [48, 48], column: 5, xs: 1, sm: 2, md: 3, lg: 4 }}
+            dataSource={[...Array(PAGE_SIZE).keys()]}
             style={{ textAlign: "center" }}
             renderItem={() => (
               <List.Item>
@@ -105,7 +81,7 @@ export default function Dashboard() {
           />
         ) : (
           <List
-            grid={{ gutter: 16, column: 5, xs: 1, sm: 2, md: 3, lg: 4 }}
+            grid={{ gutter: [48, 48], column: 5, xs: 1, sm: 2, md: 3, lg: 4 }}
             dataSource={currentData}
             renderItem={(item) => (
               <List.Item>
@@ -121,7 +97,7 @@ export default function Dashboard() {
                   />
                   <div>{item.name}</div>
                   <Button
-                    onClick={() => handleCopyUrl(item.url)}
+                    onClick={() => onCopyUrl(item.url)}
                     style={{ marginTop: 8 }}
                   >
                     Copy URL
@@ -135,15 +111,15 @@ export default function Dashboard() {
 
       <Pagination
         current={currentPage}
-        showSizeChanger
-        pageSize={pageSize}
+        pageSize={PAGE_SIZE}
         total={filteredData.length}
-        onChange={handlePageChange}
-        onShowSizeChange={handlePageChange}
-        style={{ marginTop: 16, textAlign: "right" }}
+        onChange={(page) => setCurrentPage(page)}
         showTotal={(total, range) =>
           `${range[0]}-${range[1]} of ${total} items`
         }
+        hideOnSinglePage
+        showSizeChanger={false}
+        style={{ marginTop: 16, textAlign: "right" }}
       />
     </div>
   );
