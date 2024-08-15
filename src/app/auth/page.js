@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Form, Input, Button, message, Card } from "antd";
 import Image from "next/image";
 import { useRouter, redirect } from "next/navigation";
+import { serverLogin } from "../actions/auth";
 
 export default function Login() {
   const router = useRouter();
@@ -13,17 +14,15 @@ export default function Login() {
 
   const onFinish = async (values) => {
     setLoading(true);
-    const result = await signIn("credentials", {
-      redirect: false,
-      username: values.username,
-      password: values.password,
-    });
 
-    if (result.error) {
-      message.error("Login failed");
-    } else {
-      message.success("Login successful");
+    console.log("Received values of form: ", values);
+
+    const result = await serverLogin(values);
+
+    if (result.success) {
       router.push("/images");
+    } else {
+      message.error("Login failed");
     }
 
     setLoading(false);
@@ -84,7 +83,7 @@ export default function Login() {
             <Form.Item className="w-full">
               <Button
                 type="default"
-                onClick={() => router.push("/images")}
+                href="/images"
                 className="w-full"
               >
                 Login as Guest

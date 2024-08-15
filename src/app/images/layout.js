@@ -21,7 +21,7 @@ export default function ImagesLayout({ children }) {
       key: "/images/upload",
       icon: UploadOutlined,
       label: "Upload",
-      disabled: true,
+      // disabled: true,
     },
   ].map((item) => ({
     ...item,

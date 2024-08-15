@@ -1,6 +1,5 @@
 import { getSession, signOut } from "next-auth/react";
 
-
 async function fetchClient({ method = "GET", url, body = "", token }) {
   try {
     const session = await getSession();
@@ -11,7 +10,7 @@ async function fetchClient({ method = "GET", url, body = "", token }) {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        Authorization: "Bearer" + accessToken,
+        Authorization: "Bearer " + accessToken,
       },
       body: body || undefined,
     });
@@ -26,10 +25,8 @@ async function fetchClient({ method = "GET", url, body = "", token }) {
       if (error.status === 401) {
         signOut();
       }
-
       throw error;
     }
-
     throw new Error("Failed to fetch data", { cause: error });
   }
 }
